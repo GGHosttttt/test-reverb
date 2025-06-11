@@ -29,6 +29,7 @@ Route::get('/trigger-public-event', function () {
 
 
 use App\Events\ChatMessage;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Auth;
 
 Route::post('/send-chat-message', function (Request $request) {
@@ -42,3 +43,6 @@ Route::post('/send-chat-message', function (Request $request) {
     broadcast(new ChatMessage($userId, $chatId, $message));
     return response()->json(['status' => 'Message sent']);
 })->middleware('jwt'); // Match your JWT middleware
+
+
+Route::get('/send-notification',[NotificationController::class,'sendNoti']);
