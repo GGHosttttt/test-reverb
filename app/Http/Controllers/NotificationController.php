@@ -1,31 +1,41 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Pusher\PushNotifications\PushNotifications;
+
 class NotificationController extends Controller
 {
     public function sendNoti()
     {
-        $beamClient = new PushNotifications([
-            'instanceId' => "e6c6a85a-9f57-44ec-8f3d-b9da25165d4f",
-            'secretKey' => "63082A19E9BB325C50D7B123E33A08100F818853722167CDF55152CE301E0909",
-        ]);
+        try {
+            $beamClient = new PushNotifications([
+                'instanceId' => config('services.pusher.beams_instance_id'),
+                'secretKey' => config('services.pusher.beams_secret_key'),
+            ]);
 
-        $publishResponse = $beamClient->publishToInterests(
-            ['hello'],
-            [
-                'fcm' => [
-                    "notification" => [
-                        'title' => "hello",
-                        'body' => "hello, world",
+            $publishResponse = $beamClient->publishToInterests(
+                // kom pas, ot dg ah ng ey te
+                ['your-interest-name'],
+                [
+                    'web' => [
+                        'notification' => [
+                            'title' => 'Push tv hz',
+                            'body' => 'yayyyy',
+                            'deep_link' => 'https://youtu.be/dQw4w9WgXcQ',
+                        ]
                     ]
                 ]
-            ]
-        );
+            );
 
-        return response()->json($publishResponse);
+            // Convert stdClass to array for logging
+            Log::info('Notification sent:', (array) $publishResponse);
+            return response()->json(['success' => true, 'response' => $publishResponse]);
+        } catch (\Exception $e) {
+            Log::error('Pusher Beams Error: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 }
