@@ -15,6 +15,7 @@ return [
     'middleware' => [
         \App\Http\Middleware\JwtMiddleware::class, // Your JWT middleware
     ],
+    
     'default' => env('REVERB_SERVER', 'reverb'),
 
     /*

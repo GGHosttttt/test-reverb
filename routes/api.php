@@ -45,4 +45,11 @@ Route::post('/send-chat-message', function (Request $request) {
 })->middleware('jwt'); // Match your JWT middleware
 
 
-Route::get('/send-notification',[NotificationController::class,'sendNoti']);
+// pusher beam
+Route::get('/send-notification', [NotificationController::class, 'sendNoti']);
+Route::get('/beams-auth', [NotificationController::class, 'beamsAuth'])->middleware('jwt');
+
+
+// firebase
+Route::get('/send-firebase', [NotificationController::class, 'sendPushNotification']);
+Route::post('/subscribe-topic', [NotificationController::class, 'subscribeToTopic']);
