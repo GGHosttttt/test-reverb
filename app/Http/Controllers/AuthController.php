@@ -6,6 +6,8 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use App\Events\RealTimeMessage;
+use Pusher\PushNotifications\PushNotifications;
+
 class AuthController extends Controller
 {
     public function register(Request $request)
@@ -53,7 +55,9 @@ class AuthController extends Controller
             Log::error('Login: JWT Error', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
             return response()->json(['error' => 'Could not create token'], 500);
         }
-        return response()->json(['token' => $token])
+        return response()->json([
+            'token' => $token,
+        ])
             ->cookie('jwt_token', $token, 60, '/', null, false, false, false); // Omit Domain
         //  ->cookie('jwt_token', $token, 60, '/', 'jwt.test', true, true, false, 'None')
     }
@@ -86,7 +90,25 @@ class AuthController extends Controller
             // Log::info('Me: Attempting to broadcast event', ['channel' => 'user.' . $user->id, 'event' => 'real-time.message']);
             try {
                 event(new RealTimeMessage($user->id, 'User profile accessed via /me'));
-                // Log::info('Me: Event dispatched successfully', ['user_id' => $user->id]);
+
+                $beamsClient = new PushNotifications([
+                    'instanceId' => config('services.pusher.beams_instance_id'),
+                    'secretKey' => config('services.pusher.beams_secret_key'),
+                ]);
+
+                $publishResponse = $beamsClient->publishToUsers(
+                    ['user-' . $user->id],
+                    [
+                        'web' => [
+                            'notification' => [
+                                'title' => 'Login Successful',
+                                'body' => 'Welcome back, ' . $user->name . '! You logged in at ' . now()->toDateTimeString() . '.',
+                                'deep_link' => 'http://jwt.test',
+                            ]
+                        ]
+                    ]
+                );
+                Log::info(' Notification dispatched successfully', ['data' => $publishResponse]);
             } catch (\Exception $e) {
                 Log::error('Me: Event dispatch failed', [
                     'message' => $e->getMessage(),
