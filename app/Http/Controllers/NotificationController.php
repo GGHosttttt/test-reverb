@@ -90,7 +90,6 @@ class NotificationController extends Controller
             $firebase = (new Factory)->withServiceAccount(__DIR__ . '/firebase_credentials.json');
             $messaging = $firebase->createMessaging();
             $messaging->subscribeToTopic($request->topic, [$request->token]);
-
             return response()->json(['message' => 'Subscribed to topic successfully']);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Subscription failed: ' . $e->getMessage()], 500);

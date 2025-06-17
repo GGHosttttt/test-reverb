@@ -89,13 +89,16 @@ class AuthController extends Controller
             // Log::info('Me: User Retrieved', ['user_id' => $user->id, 'email' => $user->email]);
             // Log::info('Me: Attempting to broadcast event', ['channel' => 'user.' . $user->id, 'event' => 'real-time.message']);
             try {
+                // reverb message
                 event(new RealTimeMessage($user->id, 'User profile accessed via /me'));
 
+                // pusher beam instance
                 $beamsClient = new PushNotifications([
                     'instanceId' => config('services.pusher.beams_instance_id'),
                     'secretKey' => config('services.pusher.beams_secret_key'),
                 ]);
 
+                // puhser beam pirvate
                 $publishResponse = $beamsClient->publishToUsers(
                     ['user-' . $user->id],
                     [
@@ -108,6 +111,7 @@ class AuthController extends Controller
                         ]
                     ]
                 );
+
                 Log::info(' Notification dispatched successfully', ['data' => $publishResponse]);
             } catch (\Exception $e) {
                 Log::error('Me: Event dispatch failed', [
