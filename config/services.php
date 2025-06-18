@@ -12,6 +12,19 @@ return [
     | a conventional file to locate the various service credentials.
     |
     */
+
+    'firebase' => [
+        'type' => env('FIREBASE_CREDENTIALS_TYPE'),
+        'project_id' => env('FIREBASE_PROJECT_ID'),
+        'private_key_id' => env('FIREBASE_PRIVATE_KEY_ID'),
+        'private_key' => str_replace('\\n', "\n", env('FIREBASE_PRIVATE_KEY')),
+        'client_email' => env('FIREBASE_CLIENT_EMAIL'),
+        'client_id' => env('FIREBASE_CLIENT_ID'),
+        'auth_uri' => env('FIREBASE_AUTH_URI'),
+        'token_uri' => env('FIREBASE_TOKEN_URI'),
+        'auth_provider_x509_cert_url' => env('FIREBASE_AUTH_PROVIDER_X509_CERT_URL'),
+        'client_x509_cert_url' => env('FIREBASE_CLIENT_X509_CERT_URL')
+    ],
     'pusher' => [
         'beams_instance_id' => env('PUSHER_BEAMS_INSTANCE_ID'),
         'beams_secret_key' => env('PUSHER_BEAMS_SECRET_KEY'),
