@@ -52,4 +52,5 @@ Route::get('/beams-auth', [NotificationController::class, 'beamsAuth'])->middlew
 
 // firebase
 Route::get('/send-firebase', [NotificationController::class, 'sendPushNotification']);
-Route::post('/subscribe-topic', [NotificationController::class, 'subscribeToTopic']);
+Route::post('/send-firebase-user', [NotificationController::class, 'sendPushNotificationPrivate']);
+Route::post('/subscribe-topic', [NotificationController::class, 'subscribeToTopic'])->middleware('jwt');
