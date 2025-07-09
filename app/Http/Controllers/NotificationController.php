@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,6 +12,28 @@ use Kreait\Firebase\Factory;
 use Kreait\Firebase\Messaging\CloudMessage;
 class NotificationController extends Controller
 {
+
+    public function store(Request $request)
+    {
+        $validate = $request->validate([
+            'title' => ['required', 'string', 'max:250'],
+            'message' => ['required', 'string'],
+            'scheduled_at' => ['required', 'date']
+        ]);
+
+        Notification::create([
+            'title' => $validate['title'],
+            'message' => $validate['message'],
+            'scheduled_at' => $validate['scheduled_at'] ?? null,
+        ]);
+
+        return response()->json([
+            'result' => true,
+            'mesage' => 'create successfully'
+        ]);
+
+    }
+
 
     // pusher beam
     public function beamsAuth(Request $request)
@@ -181,7 +204,8 @@ class NotificationController extends Controller
 
             Log::info('Stored FCM token for user', [
                 'user_id' => $user->id,
-                'token' => $request->token
+                // 'token' => $request->token
+                // ' token' = " "
             ]);
 
             return response()->json(['message' => 'Token stored successfully']);

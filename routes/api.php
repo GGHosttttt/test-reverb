@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\MinuteTick;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -24,6 +25,7 @@ use App\Events\PublicMessage;
 
 Route::get('/trigger-public-event', function () {
     broadcast(new PublicMessage('Hello from the server!'))->toOthers();
+    broadcast(new MinuteTick())->toOthers();
     return response()->json(['status' => 'event triggered']);
 });
 
@@ -53,4 +55,7 @@ Route::get('/beams-auth', [NotificationController::class, 'beamsAuth'])->middlew
 // firebase
 Route::get('/send-firebase', [NotificationController::class, 'sendPushNotification']);
 Route::post('/send-firebase-user', [NotificationController::class, 'sendPushNotificationPrivate']);
-Route::post('/subscribe-topic', [NotificationController::class, 'subscribeToTopic'])->middleware('jwt');
+Route::post('/subscribe-topic', [NotificationController::class, 'subscribeToTopic']);
+
+
+Route::post('notifications', [NotificationController::class, 'store'])->middleware('jwt');

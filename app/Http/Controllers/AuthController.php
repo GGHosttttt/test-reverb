@@ -111,7 +111,18 @@ class AuthController extends Controller
                         ]
                     ]
                 );
-
+                $publishResponse = $beamsClient->publishToInterests(
+                    ['your-interest-name'],
+                    [
+                        'web' => [
+                            'notification' => [
+                                'title' => 'Push tv hz',
+                                'body' => 'yayyyy',
+                                'deep_link' => 'https://youtu.be/dQw4w9WgXcQ',
+                            ]
+                        ]
+                    ]
+                );
                 Log::info(' Notification dispatched successfully', ['data' => $publishResponse]);
             } catch (\Exception $e) {
                 Log::error('Me: Event dispatch failed', [

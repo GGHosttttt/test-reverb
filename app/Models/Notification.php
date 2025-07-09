@@ -1,0 +1,15 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Notification extends Model
+{
+    protected $table = 'notifications';
+    protected $fillable = ['title', 'message', 'scheduled_at'];
+
+    protected $casts = [
+        'scheduled_at' => 'datetime'
+    ];
+}
